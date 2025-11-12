@@ -30,21 +30,20 @@ describe('API Functions', () => {
 
   describe('fetchTopHeadlines', () => {
     it('should fetch top headlines successfully', async () => {
-      mockedAxios.create = jest.fn(() => ({
-        get: jest.fn().mockResolvedValue(mockResponse),
-      } as any));
+      mockedAxios.get = jest.fn().mockResolvedValue(mockResponse);
 
       const result = await fetchTopHeadlines(1, 12);
 
       expect(result.status).toBe('ok');
       expect(result.articles).toHaveLength(1);
       expect(result.articles[0].title).toBe('Test Title');
+      expect(mockedAxios.get).toHaveBeenCalledWith('/api/news/top-headlines', {
+        params: { country: 'us', page: 1, pageSize: 12 },
+      });
     });
 
     it('should handle errors', async () => {
-      mockedAxios.create = jest.fn(() => ({
-        get: jest.fn().mockRejectedValue(new Error('Network error')),
-      } as any));
+      mockedAxios.get = jest.fn().mockRejectedValue(new Error('Network error'));
 
       await expect(fetchTopHeadlines()).rejects.toThrow('Failed to fetch top headlines');
     });
@@ -52,20 +51,19 @@ describe('API Functions', () => {
 
   describe('fetchNewsByCategory', () => {
     it('should fetch news by category successfully', async () => {
-      mockedAxios.create = jest.fn(() => ({
-        get: jest.fn().mockResolvedValue(mockResponse),
-      } as any));
+      mockedAxios.get = jest.fn().mockResolvedValue(mockResponse);
 
       const result = await fetchNewsByCategory('technology', 1, 12);
 
       expect(result.status).toBe('ok');
       expect(result.articles).toHaveLength(1);
+      expect(mockedAxios.get).toHaveBeenCalledWith('/api/news/top-headlines', {
+        params: { category: 'technology', country: 'us', page: 1, pageSize: 12 },
+      });
     });
 
     it('should handle errors', async () => {
-      mockedAxios.create = jest.fn(() => ({
-        get: jest.fn().mockRejectedValue(new Error('Network error')),
-      } as any));
+      mockedAxios.get = jest.fn().mockRejectedValue(new Error('Network error'));
 
       await expect(fetchNewsByCategory('technology')).rejects.toThrow('Failed to fetch news for category: technology');
     });
@@ -73,20 +71,19 @@ describe('API Functions', () => {
 
   describe('searchNews', () => {
     it('should search news successfully', async () => {
-      mockedAxios.create = jest.fn(() => ({
-        get: jest.fn().mockResolvedValue(mockResponse),
-      } as any));
+      mockedAxios.get = jest.fn().mockResolvedValue(mockResponse);
 
       const result = await searchNews('test query', 1, 12);
 
       expect(result.status).toBe('ok');
       expect(result.articles).toHaveLength(1);
+      expect(mockedAxios.get).toHaveBeenCalledWith('/api/news/search', {
+        params: { q: 'test query', page: 1, pageSize: 12 },
+      });
     });
 
     it('should handle errors', async () => {
-      mockedAxios.create = jest.fn(() => ({
-        get: jest.fn().mockRejectedValue(new Error('Network error')),
-      } as any));
+      mockedAxios.get = jest.fn().mockRejectedValue(new Error('Network error'));
 
       await expect(searchNews('test')).rejects.toThrow('Failed to search news');
     });

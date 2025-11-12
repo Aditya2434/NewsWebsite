@@ -1,19 +1,11 @@
 import axios from 'axios';
 import { NewsResponse, Category } from './types';
 
-const API_KEY = process.env.NEXT_PUBLIC_NEWS_API_KEY;
-const BASE_URL = 'https://newsapi.org/v2';
-
-export const newsApi = axios.create({
-  baseURL: BASE_URL,
-  params: {
-    apiKey: API_KEY,
-  },
-});
+const BASE_URL = '/api/news';
 
 export const fetchTopHeadlines = async (page: number = 1, pageSize: number = 12): Promise<NewsResponse> => {
   try {
-    const response = await newsApi.get('/top-headlines', {
+    const response = await axios.get(`${BASE_URL}/top-headlines`, {
       params: {
         country: 'us',
         page,
@@ -32,7 +24,7 @@ export const fetchNewsByCategory = async (
   pageSize: number = 12
 ): Promise<NewsResponse> => {
   try {
-    const response = await newsApi.get('/top-headlines', {
+    const response = await axios.get(`${BASE_URL}/top-headlines`, {
       params: {
         category,
         country: 'us',
@@ -52,12 +44,11 @@ export const searchNews = async (
   pageSize: number = 12
 ): Promise<NewsResponse> => {
   try {
-    const response = await newsApi.get('/everything', {
+    const response = await axios.get(`${BASE_URL}/search`, {
       params: {
         q: query,
         page,
         pageSize,
-        sortBy: 'publishedAt',
       },
     });
     return response.data;
